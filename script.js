@@ -38,6 +38,7 @@ if (heroSlider) {
   const dots = [...heroSlider.querySelectorAll('[data-slide-to]')];
   let currentSlide = 0;
   let sliderTimer;
+  let introTimer;
 
   const showSlide = (nextIndex) => {
     currentSlide = (nextIndex + slides.length) % slides.length;
@@ -51,10 +52,19 @@ if (heroSlider) {
     sliderTimer = setInterval(() => showSlide(currentSlide + 1), 4800);
   };
 
-  heroSlider.querySelector('.slider-prev')?.addEventListener('click', () => { showSlide(currentSlide - 1); startSlider(); });
-  heroSlider.querySelector('.slider-next')?.addEventListener('click', () => { showSlide(currentSlide + 1); startSlider(); });
-  dots.forEach((dot, index) => dot.addEventListener('click', () => { showSlide(index); startSlider(); }));
+  const interactWithSlider = (nextIndex) => {
+    clearTimeout(introTimer);
+    showSlide(nextIndex);
+    startSlider();
+  };
+
+  heroSlider.querySelector('.slider-prev')?.addEventListener('click', () => interactWithSlider(currentSlide - 1));
+  heroSlider.querySelector('.slider-next')?.addEventListener('click', () => interactWithSlider(currentSlide + 1));
+  dots.forEach((dot, index) => dot.addEventListener('click', () => interactWithSlider(index)));
   heroSlider.addEventListener('mouseenter', () => clearInterval(sliderTimer));
   heroSlider.addEventListener('mouseleave', startSlider);
-  startSlider();
+  introTimer = setTimeout(() => {
+    showSlide(currentSlide + 1);
+    startSlider();
+  }, 18000);
 }
